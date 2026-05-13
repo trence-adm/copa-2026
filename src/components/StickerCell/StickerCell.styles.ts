@@ -2,11 +2,11 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   cell: {
-    width: '18.4%',
-    aspectRatio: 1,
+    width: '16.4%',
+    margin: 6,
+    padding: 6,
     borderRadius: 12,
     borderWidth: 1,
-    marginBottom: 6,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',

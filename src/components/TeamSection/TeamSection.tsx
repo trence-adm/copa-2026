@@ -21,7 +21,7 @@ function TeamSectionComponent({
     <View style={styles.sectionWrap}>
       <Pressable onPress={onToggleExpanded} style={styles.header}>
         <View>
-          <Text style={styles.teamName}>{team.code} {team.name}</Text>
+          <Text style={styles.teamName}>{team.code} - {team.name}</Text>
           <Text style={styles.subtitle}>
             {ownedCount}/{totalPerTeam} obtidas
           </Text>

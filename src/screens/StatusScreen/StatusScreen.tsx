@@ -21,7 +21,7 @@ export function StatusScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Status da colecao</Text>
 

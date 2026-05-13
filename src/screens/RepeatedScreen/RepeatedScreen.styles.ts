@@ -3,13 +3,13 @@ import { StyleSheet } from 'react-native';
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f2f8fa',
+    backgroundColor: '#effbf4',
   },
   topBlock: {
     paddingHorizontal: 16,
     paddingTop: 12,
     paddingBottom: 8,
-    backgroundColor: '#114b5f',
+    backgroundColor: '#1f6f4a',
     borderBottomLeftRadius: 18,
     borderBottomRightRadius: 18,
   },
@@ -19,13 +19,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   title: {
-    color: '#e7f4f8',
+    color: '#ebfff1',
     fontSize: 21,
     fontWeight: '900',
     letterSpacing: 0.4,
   },
   orderButton: {
-    backgroundColor: '#ffb703',
+    backgroundColor: '#b7efc5',
     borderRadius: 999,
     minWidth: 64,
     alignItems: 'center',
@@ -33,7 +33,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 12,
   },
   orderText: {
-    color: '#2f2000',
+    color: '#133d28',
     fontSize: 12,
     fontWeight: '800',
   },
@@ -42,15 +42,22 @@ export const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 8,
   },
-  loadingWrap: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f2f8fa',
+  emptyState: {
+    borderWidth: 1,
+    borderColor: '#8ed2a8',
+    backgroundColor: '#dcf6e6',
+    borderRadius: 14,
+    padding: 14,
+    marginBottom: 12,
   },
-  loadingText: {
-    marginTop: 10,
-    color: '#114b5f',
-    fontWeight: '700',
+  emptyTitle: {
+    color: '#1f6f4a',
+    fontSize: 18,
+    fontWeight: '900',
+  },
+  emptyText: {
+    marginTop: 4,
+    color: '#255f42',
+    fontWeight: '600',
   },
 });

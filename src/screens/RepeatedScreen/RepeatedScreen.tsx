@@ -7,8 +7,8 @@ import { TeamSection } from '../../components/TeamSection';
 import { useCollection } from '../../context/CollectionContext';
 import { STICKER_NUMBERS, STICKERS_PER_TEAM } from '../../data/teams';
 import { TeamSnapshot } from '../../types';
-import { styles } from './MissingScreen.styles';
-import { SnapshotSortFn } from './MissingScreen.types';
+import { styles } from './RepeatedScreen.styles';
+import { SnapshotSortFn } from './RepeatedScreen.types';
 
 const sortSnapshots: SnapshotSortFn = (snapshots, mode) => {
   const sorted = [...snapshots];
@@ -21,7 +21,7 @@ const sortSnapshots: SnapshotSortFn = (snapshots, mode) => {
   return sorted;
 };
 
-export function MissingScreen() {
+export function RepeatedScreen() {
   const {
     teams,
     orderMode,
@@ -31,6 +31,7 @@ export function MissingScreen() {
     getQuantity,
     increment,
     decrement,
+    getTeamStats,
   } = useCollection();
 
   const [snapshot, setSnapshot] = useState<TeamSnapshot[]>([]);
@@ -41,7 +42,7 @@ export function MissingScreen() {
         .map((team) => ({
           team,
           numbers: STICKER_NUMBERS.filter(
-            (number) => getQuantity(team.id, number) === 0,
+            (number) => getQuantity(team.id, number) > 1,
           ),
         }))
         .filter((entry) => entry.numbers.length > 0);
@@ -59,10 +60,10 @@ export function MissingScreen() {
   );
 
   return (
-    <SafeAreaView >
+    <SafeAreaView style={styles.safeArea}>
       <View style={styles.topBlock}>
         <View style={styles.topRow}>
-          <Text style={styles.title}>Faltantes</Text>
+          <Text style={styles.title}>Repetidas</Text>
           <Pressable onPress={toggleOrderMode} style={styles.orderButton}>
             <Text style={styles.orderText}>
               {orderMode === 'album' ? 'Album' : 'A-Z'}
@@ -74,25 +75,23 @@ export function MissingScreen() {
       <ScrollView contentContainerStyle={styles.listContent}>
         {orderedSnapshot.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyTitle}>Album completo!</Text>
+            <Text style={styles.emptyTitle}>Sem repetidas no momento</Text>
             <Text style={styles.emptyText}>
-              Nao ha faltantes no snapshot atual.
+              Quando tiver copias extras, elas aparecerao aqui.
             </Text>
           </View>
         ) : null}
 
         {orderedSnapshot.map(({ team, numbers }) => {
-          const currentMissingCount = STICKER_NUMBERS.filter(
-            (number) => getQuantity(team.id, number) === 0,
-          ).length;
+          const teamStats = getTeamStats(team.id);
 
           return (
             <TeamSection
-              key={`${team.id}-missing`}
+              key={`${team.id}-repeated`}
               team={team}
               numbers={numbers}
               expanded={isExpanded(team.id)}
-              ownedCount={STICKERS_PER_TEAM - currentMissingCount}
+              ownedCount={teamStats.uniqueOwned}
               totalPerTeam={STICKERS_PER_TEAM}
               onToggleExpanded={() => toggleExpanded(team.id)}
               onPressSticker={(number) => increment(team.id, number)}

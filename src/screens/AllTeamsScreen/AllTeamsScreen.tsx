@@ -46,7 +46,7 @@ export function AllTeamsScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView >
       <View style={styles.topBlock}>
         <View style={styles.topRow}>
           <Text style={styles.title}>Figurinhas Copa 2026</Text>

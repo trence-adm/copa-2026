@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
   listContent: {
     paddingHorizontal: 12,
     paddingTop: 12,
-    paddingBottom: 14,
+    paddingBottom: 8,
   },
   emptyState: {
     borderWidth: 1,

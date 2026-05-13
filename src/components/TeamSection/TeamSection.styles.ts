@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#bfd0d8',
     borderRadius: 16,
-    marginBottom: 12,
+    marginBottom: 4,
     backgroundColor: '#f9fcfd',
     overflow: 'hidden',
   },
@@ -36,6 +36,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingTop: 12,
-    paddingBottom: 2,
+    paddingBottom:12,
   },
 });

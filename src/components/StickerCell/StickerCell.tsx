@@ -22,7 +22,7 @@ function StickerCellComponent({
       ]}
       onPress={onPress}
       onLongPress={onLongPress}
-      delayLongPress={350}
+      delayLongPress={100}
     >
       <Text style={[styles.number, hasSticker ? styles.numberOwned : null]}>
         {number}
