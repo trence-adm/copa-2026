@@ -1,0 +1,1 @@
+export { AllTeamsScreen } from './AllTeamsScreen';

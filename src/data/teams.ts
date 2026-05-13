@@ -1,0 +1,66 @@
+import { Team } from '../types';
+
+export const STICKERS_PER_TEAM = 20;
+
+const teamsInAlbumOrder: Array<{ code: string; name: string }> = [
+  { code: 'MEX', name: 'Mexico' },
+  { code: 'CAN', name: 'Canada' },
+  { code: 'USA', name: 'USA' },
+  { code: 'ARG', name: 'Argentina' },
+  { code: 'BRA', name: 'Brazil' },
+  { code: 'URU', name: 'Uruguay' },
+  { code: 'COL', name: 'Colombia' },
+  { code: 'ECU', name: 'Ecuador' },
+  { code: 'CHI', name: 'Chile' },
+  { code: 'PER', name: 'Peru' },
+  { code: 'PAR', name: 'Paraguay' },
+  { code: 'VEN', name: 'Venezuela' },
+  { code: 'ENG', name: 'England' },
+  { code: 'FRA', name: 'France' },
+  { code: 'ESP', name: 'Spain' },
+  { code: 'GER', name: 'Germany' },
+  { code: 'POR', name: 'Portugal' },
+  { code: 'NED', name: 'Netherlands' },
+  { code: 'ITA', name: 'Italy' },
+  { code: 'BEL', name: 'Belgium' },
+  { code: 'CRO', name: 'Croatia' },
+  { code: 'SUI', name: 'Switzerland' },
+  { code: 'DEN', name: 'Denmark' },
+  { code: 'SWE', name: 'Sweden' },
+  { code: 'NOR', name: 'Norway' },
+  { code: 'POL', name: 'Poland' },
+  { code: 'SRB', name: 'Serbia' },
+  { code: 'AUT', name: 'Austria' },
+  { code: 'TUR', name: 'Turkey' },
+  { code: 'UKR', name: 'Ukraine' },
+  { code: 'MAR', name: 'Morocco' },
+  { code: 'SEN', name: 'Senegal' },
+  { code: 'NGA', name: 'Nigeria' },
+  { code: 'GHA', name: 'Ghana' },
+  { code: 'CMR', name: 'Cameroon' },
+  { code: 'TUN', name: 'Tunisia' },
+  { code: 'ALG', name: 'Algeria' },
+  { code: 'EGY', name: 'Egypt' },
+  { code: 'JPN', name: 'Japan' },
+  { code: 'KOR', name: 'South Korea' },
+  { code: 'AUS', name: 'Australia' },
+  { code: 'IRN', name: 'Iran' },
+  { code: 'KSA', name: 'Saudi Arabia' },
+  { code: 'QAT', name: 'Qatar' },
+  { code: 'IRQ', name: 'Iraq' },
+  { code: 'UAE', name: 'UAE' },
+  { code: 'NZL', name: 'New Zealand' },
+  { code: 'CRC', name: 'Costa Rica' },
+];
+
+export const teams: Team[] = teamsInAlbumOrder.map(({ code, name }, index) => ({
+  id: name.toLowerCase().replace(/[^a-z0-9]/g, '-'),
+  code,
+  name,
+  albumOrder: index,
+}));
+
+export const STICKER_NUMBERS = Array.from(
+  { length: STICKERS_PER_TEAM },
+  (_, index) => index + 1,
+);
