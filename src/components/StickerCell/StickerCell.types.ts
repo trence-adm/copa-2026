@@ -2,5 +2,6 @@ export interface StickerCellProps {
   number: number;
   quantity: number;
   onPress: () => void;
-  onLongPress: () => void;
+  onLongPress?: () => void;
+  longPressDelay?: number;
 }

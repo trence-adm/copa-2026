@@ -15,6 +15,7 @@ function TeamSectionComponent({
   onToggleExpanded,
   onPressSticker,
   onLongPressSticker,
+  stickerLongPressDelay,
   getQuantity,
 }: TeamSectionProps) {
   return (
@@ -41,7 +42,12 @@ function TeamSectionComponent({
               number={number}
               quantity={getQuantity(number)}
               onPress={() => onPressSticker(number)}
-              onLongPress={() => onLongPressSticker(number)}
+              onLongPress={
+                onLongPressSticker
+                  ? () => onLongPressSticker(number)
+                  : undefined
+              }
+              longPressDelay={stickerLongPressDelay}
             />
           ))}
         </View>

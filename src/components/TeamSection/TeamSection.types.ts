@@ -8,6 +8,7 @@ export interface TeamSectionProps {
   totalPerTeam: number;
   onToggleExpanded: () => void;
   onPressSticker: (number: number) => void;
-  onLongPressSticker: (number: number) => void;
+  onLongPressSticker?: (number: number) => void;
+  stickerLongPressDelay?: number;
   getQuantity: (number: number) => number;
 }

@@ -17,7 +17,7 @@ const sortSnapshots: SnapshotSortFn = (snapshots, mode) => {
     return sorted;
   }
 
-  sorted.sort((a, b) => a.team.name.localeCompare(b.team.name));
+  sorted.sort((a, b) => a.team.code.localeCompare(b.team.code));
   return sorted;
 };
 
@@ -30,7 +30,6 @@ export function MissingScreen() {
     toggleExpanded,
     getQuantity,
     increment,
-    decrement,
   } = useCollection();
 
   const [snapshot, setSnapshot] = useState<TeamSnapshot[]>([]);
@@ -59,7 +58,7 @@ export function MissingScreen() {
   );
 
   return (
-    <SafeAreaView >
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
       <View style={styles.topBlock}>
         <View style={styles.topRow}>
           <Text style={styles.title}>Faltantes</Text>
@@ -96,7 +95,7 @@ export function MissingScreen() {
               totalPerTeam={STICKERS_PER_TEAM}
               onToggleExpanded={() => toggleExpanded(team.id)}
               onPressSticker={(number) => increment(team.id, number)}
-              onLongPressSticker={(number) => decrement(team.id, number)}
+              stickerLongPressDelay={0}
               getQuantity={(number) => getQuantity(team.id, number)}
             />
           );

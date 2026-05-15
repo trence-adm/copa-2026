@@ -9,6 +9,7 @@ function StickerCellComponent({
   quantity,
   onPress,
   onLongPress,
+  longPressDelay = 200,
 }: StickerCellProps) {
   const hasSticker = quantity > 0;
   const duplicates = quantity > 1 ? quantity - 1 : 0;
@@ -22,7 +23,7 @@ function StickerCellComponent({
       ]}
       onPress={onPress}
       onLongPress={onLongPress}
-      delayLongPress={100}
+      delayLongPress={longPressDelay}
     >
       <Text style={[styles.number, hasSticker ? styles.numberOwned : null]}>
         {number}

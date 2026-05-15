@@ -33,7 +33,6 @@ export const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between',
     paddingHorizontal: 12,
     paddingTop: 12,
     paddingBottom:12,

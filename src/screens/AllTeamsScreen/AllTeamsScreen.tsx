@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useCallback } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -16,7 +16,7 @@ const sortTeams: TeamSortFn = (teams, mode) => {
     return sorted;
   }
 
-  sorted.sort((a, b) => a.name.localeCompare(b.name));
+  sorted.sort((a, b) => a.code.localeCompare(b.code));
   return sorted;
 };
 
@@ -36,6 +36,19 @@ export function AllTeamsScreen() {
 
   const orderedTeams = useMemo(() => sortTeams(teams, orderMode), [teams, orderMode]);
 
+  const toggleSticker = useCallback(
+    (teamId: string, number: number) => {
+      const currentQuantity = getQuantity(teamId, number);
+      if (currentQuantity === 0) {
+        increment(teamId, number);
+      } else {
+        // Toggle ownership only in Todos: 0 <-> 1.
+        decrement(teamId, number);
+      }
+    },
+    [getQuantity, increment, decrement]
+  );
+
   if (!isReady) {
     return (
       <SafeAreaView style={styles.loadingWrap}>
@@ -46,7 +59,7 @@ export function AllTeamsScreen() {
   }
 
   return (
-    <SafeAreaView >
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
       <View style={styles.topBlock}>
         <View style={styles.topRow}>
           <Text style={styles.title}>Figurinhas Copa 2026</Text>
@@ -71,8 +84,8 @@ export function AllTeamsScreen() {
               ownedCount={teamStats.uniqueOwned}
               totalPerTeam={STICKERS_PER_TEAM}
               onToggleExpanded={() => toggleExpanded(team.id)}
-              onPressSticker={(number) => increment(team.id, number)}
-              onLongPressSticker={(number) => decrement(team.id, number)}
+              onPressSticker={(number) => toggleSticker(team.id, number)}
+              stickerLongPressDelay={0}
               getQuantity={(number) => getQuantity(team.id, number)}
             />
           );

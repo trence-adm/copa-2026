@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   cell: {
-    width: '16.4%',
+    width: '15%',
     margin: 6,
     padding: 6,
     borderRadius: 12,

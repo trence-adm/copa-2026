@@ -1,18 +1,16 @@
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { AllTeamsScreen } from '../screens/AllTeamsScreen';
-import { MissingScreen } from '../screens/MissingScreen';
-import { RepeatedScreen } from '../screens/RepeatedScreen';
-import { StatusScreen } from '../screens/StatusScreen';
+import { FigurinhasTabNavigator } from './FigurinhasTabNavigator';
+import { JogosCopaTabNavigator } from './JogosCopaTabNavigator';
+import { ClubesScreen } from '../screens/ClubesScreen';
 
 export type RootTabParamList = {
-  Todos: undefined;
-  Faltantes: undefined;
-  Repetidas: undefined;
-  Status: undefined;
+  Figurinhas: undefined;
+  JogosCopa: undefined;
+  Clubes: undefined;
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -24,69 +22,69 @@ export function RootTabs() {
   return (
     <NavigationContainer>
       <Tab.Navigator
-        initialRouteName="Todos"
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarActiveTintColor: '#0b4b60',
-          tabBarInactiveTintColor: '#617a84',
-          tabBarActiveBackgroundColor: '#dbeef5',
-          tabBarShowIcon: true,
+          tabBarInactiveTintColor: '#6a7f88',
           tabBarHideOnKeyboard: true,
-          tabBarIcon: ({ color, size, focused }) => {
-            if (route.name === 'Todos') {
+          tabBarStyle: {
+            height: 56 + bottomInset,
+            paddingBottom: bottomInset,
+            paddingTop: 6,
+            borderTopColor: '#d6e3e8',
+            borderTopWidth: 1,
+            backgroundColor: '#fbfdff',
+          },
+          tabBarLabelStyle: {
+            fontSize: 12,
+            fontWeight: '800',
+          },
+          tabBarIcon: ({ color, focused }) => {
+            if (route.name === 'Figurinhas') {
               return (
                 <Ionicons
                   name={focused ? 'albums' : 'albums-outline'}
-                  size={size}
+                  size={20}
                   color={color}
                 />
               );
             }
-            if (route.name === 'Faltantes') {
+
+            if (route.name === 'JogosCopa') {
               return (
                 <Ionicons
-                  name={focused ? 'remove-circle' : 'remove-circle-outline'}
-                  size={size}
+                  name={focused ? 'football' : 'football-outline'}
+                  size={20}
                   color={color}
                 />
               );
             }
-            if (route.name === 'Repetidas') {
-              return (
-                <Ionicons
-                  name={focused ? 'copy' : 'copy-outline'}
-                  size={size}
-                  color={color}
-                />
-              );
-            }
+
             return (
               <Ionicons
-                name={focused ? 'stats-chart' : 'stats-chart-outline'}
-                size={size}
+                name={focused ? 'trophy' : 'trophy-outline'}
+                size={20}
                 color={color}
               />
             );
           },
-          tabBarLabelStyle: { fontSize: 12, fontWeight: '800' },
-          tabBarItemStyle: {
-            borderRadius: 12,
-            bottom: 4
-          },
-          tabBarStyle: {
-            height: 58 + bottomInset,
-            paddingTop: 6,
-            paddingBottom: bottomInset,
-            borderTopWidth: 1,
-            borderTopColor: '#d6e3e8',
-            backgroundColor: '#fbfdff',
-          },
         })}
       >
-        <Tab.Screen name="Todos" component={AllTeamsScreen} />
-        <Tab.Screen name="Faltantes" component={MissingScreen} />
-        <Tab.Screen name="Repetidas" component={RepeatedScreen} />
-        <Tab.Screen name="Status" component={StatusScreen} />
+        <Tab.Screen
+          name="Figurinhas"
+          component={FigurinhasTabNavigator}
+          options={{ title: 'Figurinhas' }}
+        />
+        <Tab.Screen
+          name="JogosCopa"
+          component={JogosCopaTabNavigator}
+          options={{ title: 'Jogos Copa' }}
+        />
+        <Tab.Screen
+          name="Clubes"
+          component={ClubesScreen}
+          options={{ title: 'Clubes' }}
+        />
       </Tab.Navigator>
     </NavigationContainer>
   );

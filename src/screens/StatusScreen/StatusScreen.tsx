@@ -1,14 +1,24 @@
-import { useMemo } from 'react';
-import { ScrollView, Text, View } from 'react-native';
+import { useMemo, useState } from 'react';
+import { ScrollView, Text, View, Pressable, Image, Modal } from 'react-native';
+import type { ImageSourcePropType } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useCollection } from '../../context/CollectionContext';
-import { STICKERS_PER_TEAM } from '../../data/teams';
+import { STICKERS_PER_TEAM, COCA_COLA_STICKERS, getStickerImageSource, getStickersByTeam } from '../../data/teams';
 import { styles } from './StatusScreen.styles';
 import { TeamProgressEntry } from './StatusScreen.types';
 
+type SelectedSticker = {
+  imageSource: ImageSourcePropType;
+  title: string;
+  subtitle: string;
+};
+
 export function StatusScreen() {
   const { teams, getOverallStats, getTeamStats } = useCollection();
+  const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
+  const [showCocaCola, setShowCocaCola] = useState(false);
+  const [selectedSticker, setSelectedSticker] = useState<SelectedSticker | null>(null);
 
   const overall = getOverallStats();
 
@@ -20,10 +30,24 @@ export function StatusScreen() {
     [teams, getTeamStats],
   );
 
+  const toggleTeamExpand = (teamId: string) => {
+    const newExpanded = new Set(expandedTeams);
+    if (newExpanded.has(teamId)) {
+      newExpanded.delete(teamId);
+    } else {
+      newExpanded.add(teamId);
+    }
+    setExpandedTeams(newExpanded);
+  };
+
+  const toggleCocaCola = () => {
+    setShowCocaCola(!showCocaCola);
+  };
+
   return (
-    <SafeAreaView>
+    <SafeAreaView edges={['left', 'right', 'bottom']}>
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Status da colecao</Text>
+        <Text style={styles.title}>Status da coleção</Text>
 
         <View style={styles.metricsRow}>
           <View style={[styles.metricCard, styles.metricBlue]}>
@@ -48,33 +72,143 @@ export function StatusScreen() {
         </View>
 
         <View style={styles.bigCard}>
-          <Text style={styles.bigCardLabel}>Total de figurinhas fisicas</Text>
+          <Text style={styles.bigCardLabel}>Total de figurinhas físicas</Text>
           <Text style={styles.bigCardValue}>{overall.totalCards}</Text>
         </View>
 
-        <Text style={styles.sectionTitle}>Progresso por time</Text>
+        <Text style={styles.sectionTitle}>Progresso por país</Text>
 
         {perTeam.map(({ team, stats }) => {
           const completion = Math.round((stats.uniqueOwned / STICKERS_PER_TEAM) * 100);
+          const isExpanded = expandedTeams.has(team.id);
+          const teamStickers = getStickersByTeam(team.code);
+
           return (
-            <View key={`${team.id}-status`} style={styles.teamCard}>
-              <View style={styles.teamRow}>
-                <Text style={styles.teamName}>{team.name}</Text>
-                <Text style={styles.teamNumbers}>
-                  {stats.uniqueOwned}/{STICKERS_PER_TEAM}
-                </Text>
-              </View>
-              <View style={styles.progressTrack}>
-                <View
-                  style={[styles.progressFill, { width: `${completion}%` }]}
-                />
-              </View>
-              <Text style={styles.teamMeta}>
-                faltam {stats.missing} | repetidas {stats.duplicates}
-              </Text>
+            <View key={`${team.id}-status`}>
+              <Pressable onPress={() => toggleTeamExpand(team.id)}>
+                <View style={styles.teamCard}>
+                  <View style={styles.teamHeader}>
+                    <Text style={styles.expandIcon}>{isExpanded ? '▼' : '▶'}</Text>
+                    <View style={styles.teamRowExpand}>
+                      <Text style={styles.teamName}>{team.name}</Text>
+                      <Text style={styles.teamNumbers}>
+                        {stats.uniqueOwned}/{STICKERS_PER_TEAM}
+                      </Text>
+                    </View>
+                  </View>
+                  <View style={styles.progressTrack}>
+                    <View
+                      style={[styles.progressFill, { width: `${completion}%` }]}
+                    />
+                  </View>
+                  <Text style={styles.teamMeta}>
+                    faltam {stats.missing} | repetidas {stats.duplicates}
+                  </Text>
+                </View>
+              </Pressable>
+
+              {isExpanded && (
+                <View style={styles.stickerGrid}>
+                  {teamStickers.map((sticker) => {
+                    const imageSource = getStickerImageSource(team.code, sticker.number, sticker.name);
+                    return (
+                      <Pressable
+                        key={`${team.code}-${sticker.number}`}
+                        style={styles.stickerItem}
+                        onPress={() =>
+                          setSelectedSticker({
+                            imageSource,
+                            title: `${team.name} #${sticker.number}`,
+                            subtitle: sticker.name ?? 'Figurinha',
+                          })
+                        }
+                      >
+                        <View
+                          style={[
+                            styles.stickerCard,
+                            sticker.type === 'special' ? styles.stickerSpecial : undefined,
+                          ]}
+                        >
+                          <Image source={imageSource} style={styles.stickerImage} resizeMode="cover" />
+                          <View style={styles.stickerFooter}>
+                            <Text style={styles.stickerNumber}>#{sticker.number}</Text>
+                            {sticker.name ? (
+                              <Text style={styles.stickerName} numberOfLines={1}>
+                                {sticker.name}
+                              </Text>
+                            ) : null}
+                          </View>
+                        </View>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              )}
             </View>
           );
         })}
+
+        <Text style={styles.sectionTitle}>Coca-Cola Especiais</Text>
+
+        <Pressable onPress={toggleCocaCola}>
+          <View style={styles.cocaColaHeader}>
+            <Text style={styles.expandIcon}>{showCocaCola ? '▼' : '▶'}</Text>
+            <Text style={styles.cocaColaTitle}>Figurinhas Coca-Cola</Text>
+            <Text style={styles.cocaColaCount}>{COCA_COLA_STICKERS.length} figurinhas</Text>
+          </View>
+        </Pressable>
+
+        {showCocaCola && (
+          <View style={styles.cocaColaGrid}>
+            {COCA_COLA_STICKERS.map((sticker) => {
+              const rarityColors: Record<string, string> = {
+                common: '#e0e0e0',
+                uncommon: '#4caf50',
+                rare: '#2196f3',
+                ultra_rare: '#ffc107',
+              };
+
+              return (
+                <View key={sticker.id} style={styles.cocaColaItem}>
+                  <View style={[
+                    styles.cocaColaCard,
+                    { borderColor: rarityColors[sticker.rarity], borderWidth: 2 },
+                  ]}>
+                    <Text style={styles.cocaColaName} numberOfLines={2}>
+                      {sticker.name}
+                    </Text>
+                    <Text style={[styles.rarityBadge, { backgroundColor: rarityColors[sticker.rarity] }]}>
+                      {sticker.rarity.toUpperCase()}
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        <Modal
+          visible={selectedSticker !== null}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setSelectedSticker(null)}
+        >
+          <Pressable style={styles.modalBackdrop} onPress={() => setSelectedSticker(null)}>
+            <View style={styles.modalCard}>
+              {selectedSticker ? (
+                <>
+                  <Image
+                    source={selectedSticker.imageSource}
+                    style={styles.modalImage}
+                    resizeMode="cover"
+                  />
+                  <Text style={styles.modalTitle}>{selectedSticker.title}</Text>
+                  <Text style={styles.modalSubtitle}>{selectedSticker.subtitle}</Text>
+                </>
+              ) : null}
+            </View>
+          </Pressable>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );

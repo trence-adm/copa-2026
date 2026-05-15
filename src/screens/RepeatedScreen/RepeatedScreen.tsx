@@ -17,7 +17,7 @@ const sortSnapshots: SnapshotSortFn = (snapshots, mode) => {
     return sorted;
   }
 
-  sorted.sort((a, b) => a.team.name.localeCompare(b.team.name));
+  sorted.sort((a, b) => a.team.code.localeCompare(b.team.code));
   return sorted;
 };
 
@@ -60,7 +60,7 @@ export function RepeatedScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.safeArea}>
       <View style={styles.topBlock}>
         <View style={styles.topRow}>
           <Text style={styles.title}>Repetidas</Text>
@@ -96,6 +96,7 @@ export function RepeatedScreen() {
               onToggleExpanded={() => toggleExpanded(team.id)}
               onPressSticker={(number) => increment(team.id, number)}
               onLongPressSticker={(number) => decrement(team.id, number)}
+              stickerLongPressDelay={200}
               getQuantity={(number) => getQuantity(team.id, number)}
             />
           );
