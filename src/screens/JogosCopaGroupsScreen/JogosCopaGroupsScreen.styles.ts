@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+﻿import { StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
   safeArea: {
@@ -27,10 +27,41 @@ export const styles = StyleSheet.create({
     padding: 12,
     gap: 8,
   },
+  groupHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   groupName: {
     fontSize: 16,
     fontWeight: '900',
     color: '#0b4b60',
+  },
+  expandText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#2b6f85',
+  },
+  teamPreviewGrid: {
+    marginTop: 4,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  teamPreviewCard: {
+    width: '48%',
+    borderWidth: 1,
+    borderColor: '#d9e8ef',
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    backgroundColor: '#f8fbfd',
+  },
+  teamPreviewName: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#1d3640',
   },
   row: {
     flexDirection: 'row',
@@ -58,6 +89,52 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#114b5f',
     fontWeight: '900',
+  },
+  matchesWrap: {
+    marginTop: 12,
+    gap: 6,
+    borderTopWidth: 1,
+    borderTopColor: '#edf3f6',
+    paddingTop: 10,
+  },
+  matchesTitle: {
+    fontSize: 12,
+    fontWeight: '900',
+    color: '#0b4b60',
+    marginBottom: 2,
+  },
+  matchCard: {
+    backgroundColor: '#f8fbfd',
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#d9e8ef',
+    padding: 12,
+    marginBottom: 8,
+    gap: 6,
+  },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  matchTeamFlag: {
+    fontSize: 24,
+  },
+  matchTeam: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#1d3640',
+  },
+  matchScore: {
+    fontSize: 18,
+    fontWeight: '900',
+    minWidth: 20,
+    textAlign: 'right',
+  },
+  matchDate: {
+    fontSize: 10,
+    color: '#4f6771',
+    fontWeight: '600',
   },
   loadingWrap: {
     flex: 1,

@@ -175,6 +175,9 @@ export const styles = StyleSheet.create({
     color: '#3a2e22',
     textAlign: 'center',
   },
+  stickerNumberMissing: {
+    color: '#aaaaaa',
+  },
   stickerName: {
     fontSize: 9,
     color: '#5d4b3a',
@@ -186,6 +189,18 @@ export const styles = StyleSheet.create({
     width: '100%',
     height: '78%',
     backgroundColor: '#efe6d8',
+  },
+  stickerImageMissing: {
+    opacity: 0.55,
+    backgroundColor: '#d8d8d8',
+    tintColor: '#9a9a9a',
+  },
+  stickerOwned: {
+    borderColor: '#c8b89a',
+  },
+  stickerMissing: {
+    borderColor: '#cccccc',
+    backgroundColor: '#f5f5f5',
   },
   stickerFooter: {
     flex: 1,

@@ -1,8 +1,8 @@
-import { useEffect, useState, useMemo } from 'react';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
+﻿import { useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { getWorldCupGroups, getWorldCupMatches, WorldCupGroup, MatchItem } from '../../features/games';
+import { MatchItem, WorldCupGroup, getWorldCupGroups, getWorldCupMatches } from '../../features/games';
 import { styles } from './JogosCopaGroupsScreen.styles';
 
 const formatTime = (iso: string) => {
@@ -22,10 +22,22 @@ const formatDate = (iso: string) => {
   });
 };
 
+const teamNameWithoutFlag = (team: string | null | undefined) => {
+  if (!team) return '';
+  return team.replace(/^\p{Regional_Indicator}{2}\s*/u, '').trim();
+};
+
+const getTeamFlag = (team: string | null | undefined) => {
+  if (!team) return '';
+  const match = team.match(/^\p{Regional_Indicator}{2}/u);
+  return match ? match[0] : '';
+};
+
 export function JogosCopaGroupsScreen() {
   const [groups, setGroups] = useState<WorldCupGroup[]>([]);
   const [matches, setMatches] = useState<MatchItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     let active = true;
@@ -42,9 +54,14 @@ export function JogosCopaGroupsScreen() {
         if (active) {
           setGroups(groupData);
           const sorted = [...matchData].sort(
-            (a, b) => new Date(a.dateIso).getTime() - new Date(b.dateIso).getTime()
+            (a, b) => new Date(a.dateIso).getTime() - new Date(b.dateIso).getTime(),
           );
           setMatches(sorted);
+          const collapsedByDefault = groupData.reduce<Record<string, boolean>>((acc, group) => {
+            acc[group.id] = false;
+            return acc;
+          }, {});
+          setExpandedGroups(collapsedByDefault);
         }
       })
       .finally(() => {
@@ -58,11 +75,17 @@ export function JogosCopaGroupsScreen() {
     };
   }, []);
 
-  // Group matches by stage (Fase de Grupos matches)
   const groupMatches = useMemo(
     () => matches.filter((m) => m.stage === 'Fase de Grupos'),
-    [matches]
+    [matches],
   );
+
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups((current) => ({
+      ...current,
+      [groupId]: !current[groupId],
+    }));
+  };
 
   if (isLoading) {
     return (
@@ -78,62 +101,79 @@ export function JogosCopaGroupsScreen() {
         <Text style={styles.title}>Tabela da Copa</Text>
         <Text style={styles.subtitle}>Grupos e jogos</Text>
 
-        {groups.map((group) => (
-          (() => {
-            const groupTeams = new Set(group.standings.map((team) => team.team));
-            const matchesByGroup = groupMatches.filter(
-              (item) => groupTeams.has(item.homeTeam) && groupTeams.has(item.awayTeam)
-            );
+        {groups.map((group) => {
+          const groupTeams = new Set(group.standings.map((team) => team.team));
+          const matchesByGroup = groupMatches.filter(
+            (item) => groupTeams.has(item.homeTeam) && groupTeams.has(item.awayTeam),
+          );
+          const isExpanded = expandedGroups[group.id] ?? false;
 
-            return (
-              <View key={group.id} style={styles.card}>
+          return (
+            <View key={group.id} style={styles.card}>
+              <Pressable style={styles.groupHeader} onPress={() => toggleGroup(group.id)}>
                 <Text style={styles.groupName}>{group.name}</Text>
-                {group.standings.map((team, index) => (
-                  <View key={`${group.id}-${team.team}`} style={styles.row}>
-                    <Text style={styles.rowPos}>{index + 1}.</Text>
-                    <Text style={styles.rowTeam}>{team.team}</Text>
-                    <Text style={styles.rowPoints}>{team.points}p</Text>
-                  </View>
-                ))}
+                <Text style={styles.expandText}>{isExpanded ? 'Ocultar' : 'Expandir'}</Text>
+              </Pressable>
 
-                {matchesByGroup.length > 0 && (
-                  <View style={{ marginTop: 12, gap: 6, borderTopWidth: 1, borderTopColor: '#edf3f6', paddingTop: 10 }}>
-                    <Text style={{ fontSize: 12, fontWeight: '900', color: '#0b4b60', marginBottom: 2 }}>
-                      Jogos do {group.name}
-                    </Text>
-                    {matchesByGroup.map((item) => {
-                      const score =
-                        item.homeScore !== undefined && item.awayScore !== undefined
-                          ? `${item.homeScore} x ${item.awayScore}`
-                          : '_ x _';
-                      const scoreColor = item.homeScore !== undefined ? '#1d3640' : '#a0a8ae';
-                      return (
-                        <View
-                          key={item.id}
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            backgroundColor: '#f8fbfd',
-                            borderRadius: 8,
-                            padding: 8,
-                            gap: 6,
-                          }}
-                        >
-                          <Text style={{ flex: 1, fontSize: 13, fontWeight: '700', color: '#1d3640' }}>
-                            {item.homeTeam} <Text style={{ color: scoreColor }}>{score}</Text> {item.awayTeam}
-                          </Text>
-                          <Text style={{ fontSize: 10, color: '#4f6771', fontWeight: '600' }}>
-                            {formatDate(item.dateIso)} {formatTime(item.dateIso)}
-                          </Text>
-                        </View>
-                      );
-                    })}
-                  </View>
-                )}
-              </View>
-            );
-          })()
-        ))}
+              {!isExpanded ? (
+                <View style={styles.teamPreviewGrid}>
+                  {group.standings.slice(0, 4).map((team) => (
+                    <View key={`${group.id}-${team.team}-preview`} style={styles.teamPreviewCard}>
+                      <Text style={styles.teamPreviewName} numberOfLines={1}>
+                        {team.team}
+                      </Text>
+                    </View>
+                  ))}
+                </View>
+              ) : null}
+
+              {isExpanded ? (
+                <>
+                  {group.standings.map((team, index) => (
+                    <View key={`${group.id}-${team.team}`} style={styles.row}>
+                      <Text style={styles.rowPos}>{index + 1}.</Text>
+                      <Text style={styles.rowTeam}>{teamNameWithoutFlag(team.team)}</Text>
+                      <Text style={styles.rowPoints}>{team.points}p</Text>
+                    </View>
+                  ))}
+
+                  {matchesByGroup.length > 0 ? (
+                    <View style={styles.matchesWrap}>
+                      <Text style={styles.matchesTitle}>Jogos do {group.name}</Text>
+                      {matchesByGroup.map((item) => {
+                        const hasScore = item.homeScore !== undefined && item.awayScore !== undefined;
+                        const scoreColor = hasScore ? '#1d3640' : '#a0a8ae';
+                        const homeFlag = getTeamFlag(item.homeTeam);
+                        const awayFlag = getTeamFlag(item.awayTeam);
+                        return (
+                          <View key={item.id} style={styles.matchCard}>
+                            <View style={styles.teamRow}>
+                              <Text style={styles.matchTeamFlag}>{homeFlag}</Text>
+                              <Text style={[styles.matchTeam, { flex: 1 }]}>{teamNameWithoutFlag(item.homeTeam)}</Text>
+                              <Text style={[styles.matchScore, { color: scoreColor }]}>
+                                {hasScore ? String(item.homeScore) : '_'}
+                              </Text>
+                            </View>
+                            <View style={styles.teamRow}>
+                              <Text style={styles.matchTeamFlag}>{awayFlag}</Text>
+                              <Text style={[styles.matchTeam, { flex: 1 }]}>{teamNameWithoutFlag(item.awayTeam)}</Text>
+                              <Text style={[styles.matchScore, { color: scoreColor }]}>
+                                {hasScore ? String(item.awayScore) : '_'}
+                              </Text>
+                            </View>
+                            <Text style={styles.matchDate}>
+                              {formatDate(item.dateIso)} {formatTime(item.dateIso)}
+                            </Text>
+                          </View>
+                        );
+                      })}
+                    </View>
+                  ) : null}
+                </>
+              ) : null}
+            </View>
+          );
+        })}
       </ScrollView>
     </SafeAreaView>
   );

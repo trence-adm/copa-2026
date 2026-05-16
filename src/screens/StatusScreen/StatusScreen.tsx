@@ -15,7 +15,7 @@ type SelectedSticker = {
 };
 
 export function StatusScreen() {
-  const { teams, getOverallStats, getTeamStats } = useCollection();
+  const { teams, getOverallStats, getTeamStats, getQuantity } = useCollection();
   const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
   const [showCocaCola, setShowCocaCola] = useState(false);
   const [selectedSticker, setSelectedSticker] = useState<SelectedSticker | null>(null);
@@ -110,14 +110,17 @@ export function StatusScreen() {
               {isExpanded && (
                 <View style={styles.stickerGrid}>
                   {teamStickers.map((sticker) => {
+                    const qty = getQuantity(team.id, sticker.number);
+                    const isOwned = qty > 0;
                     const imageSource = getStickerImageSource(team.code, sticker.number, sticker.name);
+                    const colorImageSource = getStickerImageSource(team.code, sticker.number, sticker.name);
                     return (
                       <Pressable
                         key={`${team.code}-${sticker.number}`}
                         style={styles.stickerItem}
                         onPress={() =>
                           setSelectedSticker({
-                            imageSource,
+                            imageSource: colorImageSource,
                             title: `${team.name} #${sticker.number}`,
                             subtitle: sticker.name ?? 'Figurinha',
                           })
@@ -127,11 +130,18 @@ export function StatusScreen() {
                           style={[
                             styles.stickerCard,
                             sticker.type === 'special' ? styles.stickerSpecial : undefined,
+                            isOwned ? styles.stickerOwned : styles.stickerMissing,
                           ]}
                         >
-                          <Image source={imageSource} style={styles.stickerImage} resizeMode="cover" />
+                          <Image
+                            source={imageSource}
+                            style={[styles.stickerImage, !isOwned && styles.stickerImageMissing]}
+                            resizeMode="cover"
+                          />
                           <View style={styles.stickerFooter}>
-                            <Text style={styles.stickerNumber}>#{sticker.number}</Text>
+                            <Text style={[styles.stickerNumber, !isOwned && styles.stickerNumberMissing]}>
+                              #{sticker.number}
+                            </Text>
                             {sticker.name ? (
                               <Text style={styles.stickerName} numberOfLines={1}>
                                 {sticker.name}

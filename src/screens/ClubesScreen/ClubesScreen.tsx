@@ -167,23 +167,28 @@ export function ClubesScreen() {
               </Text>
 
               {dayMatches.map((item) => {
-                const score =
-                  item.homeScore !== undefined && item.awayScore !== undefined
-                    ? `${item.homeScore} x ${item.awayScore}`
-                    : '_ x _';
+                const hasScore = item.homeScore !== undefined && item.awayScore !== undefined;
+                const scoreColor = hasScore ? '#1d3640' : '#a0a8ae';
                 return (
                   <View key={item.id} style={styles.card}>
-                    <Text style={styles.teams}>
+                    <View style={styles.teamRow}>
                       {item.homeTeamCrest ? (
                         <Image source={{ uri: item.homeTeamCrest }} style={styles.crest} />
                       ) : null}
-                      {' '}
-                      {item.homeTeam} <Text>{score}</Text> {item.awayTeam}
-                      {' '}
+                      <Text style={[styles.teams, { flex: 1 }]}>{item.homeTeam}</Text>
+                      <Text style={[styles.matchScore, { color: scoreColor }]}>
+                        {hasScore ? String(item.homeScore) : '_'}
+                      </Text>
+                    </View>
+                    <View style={styles.teamRow}>
                       {item.awayTeamCrest ? (
                         <Image source={{ uri: item.awayTeamCrest }} style={styles.crest} />
                       ) : null}
-                    </Text>
+                      <Text style={[styles.teams, { flex: 1 }]}>{item.awayTeam}</Text>
+                      <Text style={[styles.matchScore, { color: scoreColor }]}>
+                        {hasScore ? String(item.awayScore) : '_'}
+                      </Text>
+                    </View>
                     <Text style={styles.meta}>
                       {item.competitionName} | {item.stage} | {formatTime(item.dateIso)}
                     </Text>

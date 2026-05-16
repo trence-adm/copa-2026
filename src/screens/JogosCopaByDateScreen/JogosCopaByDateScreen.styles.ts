@@ -37,10 +37,24 @@ export const styles = StyleSheet.create({
     padding: 10,
     gap: 6,
   },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  teamFlag: {
+    fontSize: 24,
+  },
   teams: {
     fontSize: 15,
     fontWeight: '800',
     color: '#1d3640',
+  },
+  matchScore: {
+    fontSize: 18,
+    fontWeight: '900',
+    minWidth: 20,
+    textAlign: 'right',
   },
   meta: {
     fontSize: 12,

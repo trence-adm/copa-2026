@@ -6,11 +6,13 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FigurinhasTabNavigator } from './FigurinhasTabNavigator';
 import { JogosCopaTabNavigator } from './JogosCopaTabNavigator';
 import { ClubesScreen } from '../screens/ClubesScreen';
+import { MenuScreen } from '../screens/MenuScreen';
 
 export type RootTabParamList = {
   Figurinhas: undefined;
   JogosCopa: undefined;
   Clubes: undefined;
+  Menu: undefined;
 };
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
@@ -60,6 +62,16 @@ export function RootTabs() {
               );
             }
 
+            if (route.name === 'Menu') {
+              return (
+                <Ionicons
+                  name={focused ? 'menu' : 'menu-outline'}
+                  size={20}
+                  color={color}
+                />
+              );
+            }
+
             return (
               <Ionicons
                 name={focused ? 'trophy' : 'trophy-outline'}
@@ -84,6 +96,11 @@ export function RootTabs() {
           name="Clubes"
           component={ClubesScreen}
           options={{ title: 'Clubes' }}
+        />
+        <Tab.Screen
+          name="Menu"
+          component={MenuScreen}
+          options={{ title: 'Menu' }}
         />
       </Tab.Navigator>
     </NavigationContainer>

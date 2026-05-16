@@ -5,6 +5,17 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { getWorldCupMatches, MatchItem } from '../../features/games';
 import { styles } from './JogosCopaByDateScreen.styles';
 
+const getTeamFlag = (team: string | null | undefined) => {
+  if (!team) return '';
+  const match = team.match(/^\p{Regional_Indicator}{2}/u);
+  return match ? match[0] : '';
+};
+
+const teamNameWithoutFlag = (team: string | null | undefined) => {
+  if (!team) return '';
+  return team.replace(/^\p{Regional_Indicator}{2}\s*/u, '').trim();
+};
+
 const toIsoWindow = () => {
   const now = new Date();
   const from = new Date(now);
@@ -101,16 +112,27 @@ export function JogosCopaByDateScreen() {
                 {formatDayLabel(dayKey)} {isToday ? '(hoje)' : ''}
               </Text>
               {dayMatches.map((item) => {
-                const score =
-                  item.homeScore !== undefined && item.awayScore !== undefined
-                    ? `${item.homeScore} x ${item.awayScore}`
-                    : 'x';
+                const hasScore = item.homeScore !== undefined && item.awayScore !== undefined;
+                const scoreColor = hasScore ? '#1d3640' : '#a0a8ae';
+                const homeFlag = getTeamFlag(item.homeTeam);
+                const awayFlag = getTeamFlag(item.awayTeam);
 
                 return (
                   <View key={item.id} style={styles.card}>
-                    <Text style={styles.teams}>
-                      {item.homeTeam} <Text style={{ textDecorationLine: item.homeScore === undefined ? 'underline' : 'none' }}>{score}</Text> {item.awayTeam}
-                    </Text>
+                    <View style={styles.teamRow}>
+                      <Text style={styles.teamFlag}>{homeFlag}</Text>
+                      <Text style={[styles.teams, { flex: 1 }]}>{teamNameWithoutFlag(item.homeTeam)}</Text>
+                      <Text style={[styles.matchScore, { color: scoreColor }]}>
+                        {hasScore ? String(item.homeScore) : '_'}
+                      </Text>
+                    </View>
+                    <View style={styles.teamRow}>
+                      <Text style={styles.teamFlag}>{awayFlag}</Text>
+                      <Text style={[styles.teams, { flex: 1 }]}>{teamNameWithoutFlag(item.awayTeam)}</Text>
+                      <Text style={[styles.matchScore, { color: scoreColor }]}>
+                        {hasScore ? String(item.awayScore) : '_'}
+                      </Text>
+                    </View>
                     <Text style={styles.meta}>{item.stage} · {formatTime(item.dateIso)}</Text>
                     {item.broadcast ? <Text style={styles.meta}>Onde assistir: {item.broadcast}</Text> : null}
                   </View>

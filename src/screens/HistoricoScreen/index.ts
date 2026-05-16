@@ -1,0 +1,1 @@
+export { HistoricoScreen } from './HistoricoScreen';

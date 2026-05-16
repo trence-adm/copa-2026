@@ -37,6 +37,12 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
   },
+  infoText: {
+    marginTop: 8,
+    color: '#a8e8c0',
+    fontSize: 11,
+    fontWeight: '600',
+  },
   listContent: {
     paddingHorizontal: 12,
     paddingTop: 12,

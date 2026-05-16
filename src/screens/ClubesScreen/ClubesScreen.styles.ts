@@ -60,7 +60,18 @@ export const styles = StyleSheet.create({
     borderColor: '#d6e3e8',
     borderRadius: 12,
     padding: 10,
-    gap: 4,
+    gap: 6,
+  },
+  teamRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  matchScore: {
+    fontSize: 18,
+    fontWeight: '900',
+    minWidth: 20,
+    textAlign: 'right',
   },
   teams: {
     fontSize: 15,
@@ -72,7 +83,6 @@ export const styles = StyleSheet.create({
     height: 16,
     borderRadius: 8,
     marginHorizontal: 2,
-    verticalAlign: 'middle',
   },
   meta: {
     fontSize: 12,
